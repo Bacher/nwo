@@ -25,11 +25,7 @@ nwo.initCursorHighlight = function() {
         nwo.ctx[2].strokeStyle = '#F00';
         nwo.ctx[2].strokeRect(col * 20, row * 20, 20, 20);
 
-
-
-        //
-
-        console.log(nwo.normalize(nwo.sub(nwo.cursor.pos, nwo.player.pos)));
+        //console.log(nwo.normalize(nwo.sub(nwo.cursor.pos, nwo.player._pos)));
     });
 
 };

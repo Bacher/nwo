@@ -1,40 +1,32 @@
 
-nwo.bindEventListeners = function() {
+nwo.Input = {};
 
-    nwo.bindKeyboard();
+nwo.Input.KEYS = {
+    w: 87,
+    s: 83,
+    a: 65,
+    d: 68,
+    c: 67,
+    space: 32,
+    shift: 16
+};
 
-    //nwo.bindMouse();
+nwo.Input.bindEventListeners = function() {
+
+    nwo.Input._bindKeyboard();
+
+    //nwo.Input._bindMouse();
 
 };
 
-nwo.bindKeyboard = function() {
-    var KEYS = {
-        w: 87,
-        s: 83,
-        a: 65,
-        d: 68,
-        c: 67,
-        space: 32,
-        shift: 16
-    };
-
-    var KEY_CODES_MATCHING = {
-        x: {
-            '+': KEYS.d,
-            '-': KEYS.a
-        },
-        y: {
-            '+': KEYS.s,
-            '-': KEYS.w
-        }
-    };
+nwo.Input._bindKeyboard = function() {
 
     var keysPressed = {};
 
     $(document).on('keydown keyup', function(e) {
         var which = e.which;
 
-        //console.log(e.which);
+        //console.log(which);
 
         if (e.metaKey || e.ctrlKey) {
             return;
@@ -42,46 +34,17 @@ nwo.bindKeyboard = function() {
 
         if (e.type === 'keyup') {
             delete keysPressed[which];
-            recalcPlayerDirection();
+            nwo.trigger('keyboard', keysPressed);
         } else {
             if (!keysPressed[which]) {
                 keysPressed[which] = true;
-                recalcPlayerDirection();
+                nwo.trigger('keyboard', keysPressed);
             }
         }
 
         e.preventDefault();
 
     });
-
-    function recalcPlayerDirection() {
-
-        var direction = nwo.player.dir = {
-            x: 0,
-            y: 0
-        };
-
-        for (var axis in KEY_CODES_MATCHING) {
-            var s = KEY_CODES_MATCHING[axis];
-
-            for (var n in s) {
-                if (keysPressed[s[n]]) {
-                    direction[axis] += (n === '+' ? 1 : -1);
-                }
-            }
-        }
-
-        if (direction.x && direction.y) {
-            direction.x *= 0.71;
-            direction.y *= 0.71;
-        }
-
-        nwo.player.powerActive = keysPressed[KEYS.c];
-
-        nwo.player.speedModification = keysPressed[KEYS.shift] ? 0.6 : 1;
-
-        nwo.player.shieldUp = keysPressed[KEYS.space];
-    }
 };
 
 //nwo.bindMouse = function() {
