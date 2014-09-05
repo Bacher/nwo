@@ -1,0 +1,56 @@
+
+BODY
+  margin: 0
+  background: #000
+  color: #FFF
+
+.game
+  display: inline-block
+  position: relative
+  cursor: cell
+
+.canvas-wrapper
+  display: inline-block
+  outline: 1px solid black
+  width: 800px
+  height: 400px
+
+  & CANVAS
+    position: absolute
+
+.ui
+  position: absolute
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+
+.right-panel
+  position: absolute
+  right: 0
+  top: 0
+  bottom: 0
+  width: 50px
+
+//.buildings
+
+.building
+  text-align: center
+  padding: 3px 0
+  border: 1px solid #000
+  cursor: pointer
+  background: #DDD
+
+  &:hover
+    border: 1px solid red
+
+.navigation
+  bottom: 0
+
+.arrow
+  display: inline-block
+  text-align: center
+  width: 20px
+  height: @width
+  color: #000
+  background: #0F0
