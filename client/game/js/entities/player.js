@@ -66,7 +66,6 @@
             var ctx = nwo.ctx[1];
             
             var pr = nwo.PIXEL_RATIO;
-            debugger
 
             var barHeight = this._size - 2/pr;
             var filledBy = barHeight * this._power / 100;

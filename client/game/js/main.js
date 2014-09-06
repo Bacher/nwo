@@ -25,7 +25,7 @@ $(function() {
 
         nwo.initCamera();
 
-        nwo.drawMap();
+        nwo.needMapDraw = true;
 
         new nwo.Player({
             pos: {
@@ -61,7 +61,25 @@ $(function() {
     }
 
     function drawIteration() {
-        var ctx = nwo.ctx[1];
+        var ctx;
+
+        if (nwo.needMapDraw) {
+            ctx = nwo.ctx[0];
+
+            ctx.clearRect(0, 0, nwo.W, nwo.H);
+
+            ctx.save();
+
+            ctx.scale(nwo.PIXEL_RATIO, nwo.PIXEL_RATIO);
+
+            nwo.drawMap();
+
+            ctx.restore();
+
+            nwo.needMapDraw = false;
+        }
+
+        ctx = nwo.ctx[1];
 
         ctx.clearRect(0, 0, nwo.W, nwo.H);
 
