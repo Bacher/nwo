@@ -4,10 +4,14 @@
     function TexturedObject(params) {
         nwo.GameObject.call(this, params);
 
+        var texPath = params.tex.split('/');
+
+        var tex = nwo.textures[texPath[0]];
+
         _.extend(this, {
             _tex: {
-                img: params.tex.image,
-                details: params.tex.details[params.texName],
+                img: tex.image,
+                details: tex.details[texPath[1]],
                 scale: params.texScale || 1
             }
         });

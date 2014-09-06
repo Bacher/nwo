@@ -1,26 +1,26 @@
 $(function() {
 
+    nwo.textures = {};
     nwo._gameObjects = [];
 
     nwo.initCanvas();
 
     nwo.initUI();
 
-    var playerTexture;
+    var waitLoad = [];
 
-    var tD1 = nwo.loadTexture('character4').then(function(tex) {
-        playerTexture = tex;
-    });
-
-    var tD2 = nwo.loadTexture('texture1').then(function(tex) {
-        nwo.texture = tex;
-    });
+    waitLoad.push(
+        nwo.loadTexture('character4.png'),
+        nwo.loadTexture('texture1.png'),
+        nwo.loadTexture('minecraft1.png'),
+        nwo.loadTexture('water.jpg')
+    );
 
     nwo.on('new-object', function(obj) {
         nwo._gameObjects.push(obj);
     });
 
-    Promise.all([tD1, tD2]).then(function() {
+    nwo.play = function() {
         nwo.map = new nwo.Map(0);
 
         nwo.initCamera();
@@ -33,8 +33,7 @@ $(function() {
                 y: 10
             },
             size: 1,
-            tex: playerTexture,
-            texName: 'archer1'
+            tex: 'character4.png/archer1'
         });
 
         nwo.initCursorHighlight();
@@ -44,9 +43,13 @@ $(function() {
         logicIteration();
 
         drawIteration();
-    });
+    };
 
-
+    Promise.all(waitLoad)
+        .then(nwo.play);
+//        .catch(function() {
+//            throw new Error('Texture not loaded');
+//        });
 
     function logicIteration() {
 
@@ -64,7 +67,7 @@ $(function() {
 
         ctx.save();
 
-        ctx.scale(20, 20);
+        ctx.scale(nwo.PIXEL_RATIO, nwo.PIXEL_RATIO);
 
         nwo._gameObjects.forEach(function(obj) {
             obj.draw();

@@ -1,8 +1,8 @@
 
 (function() {
 
-    var BAR_OFFSET = 4/20;
-    var BAR_WIDTH = 4/20;
+    var BAR_OFFSET = 4/nwo.PIXEL_RATIO;
+    var BAR_WIDTH = 4/nwo.PIXEL_RATIO;
 
     var MINIMAL_POWER_NEEDS = 35;
 
@@ -50,8 +50,7 @@
             if (this._power > MINIMAL_POWER_NEEDS) {
 
                 new nwo.Missile({
-                    tex: nwo.texture,
-                    texName: 'arrow',
+                    tex: 'texture1.png/arrow',
                     speed: 4 + this._power / 10,
                     dir: nwo.normalize(nwo.sub(nwo.cursor.pos, this._pos)),
                     pos: _.clone(this._pos)
@@ -65,18 +64,21 @@
     Player.prototype._drawPowerBar = function() {
         if (this._power) {
             var ctx = nwo.ctx[1];
+            
+            var pr = nwo.PIXEL_RATIO;
+            debugger
 
-            var barHeight = this._size - 2/20;
+            var barHeight = this._size - 2/pr;
             var filledBy = barHeight * this._power / 100;
 
             var x1 = this._pos.x + this._size / 2 + BAR_OFFSET;
-            var y1 = this._pos.y - barHeight / 2 - 1/20;
+            var y1 = this._pos.y - barHeight / 2 - 1/pr;
 
             ctx.strokeStyle = '#000';
             ctx.fillRect(x1, y1 , BAR_WIDTH, this._size);
 
             ctx.fillStyle = (this._power > this._minimalPower ? '#0F0' : '#F00');
-            ctx.fillRect(x1 + 1/20, y1 + 1/20 + barHeight - filledBy, BAR_WIDTH - 2/20, filledBy);
+            ctx.fillRect(x1 + 1/pr, y1 + 1/pr + barHeight - filledBy, BAR_WIDTH - 2/pr, filledBy);
         }
     };
 

@@ -10,17 +10,19 @@ nwo.drawMap = function() {
 
     var DISPLAY_MATCH = {};
     DISPLAY_MATCH[CELL_TYPES.EMPTY] = {
-        bg: '#89250E'
+        //bg: '#89250E',
+        tex: ['minecraft1.png/grass']
     };
     DISPLAY_MATCH[CELL_TYPES.ROCK] = {
         bg: '#615B5C'
     };
     DISPLAY_MATCH[CELL_TYPES.TREE] = {
         bg: '#89250E',//'#159910'
-        tex: 'tree1'
+        tex: ['minecraft1.png/grass', 'texture1.png/tree1']
     };
     DISPLAY_MATCH[CELL_TYPES.WATER] = {
-        bg: '#0904DD'
+        bg: '#0904DD',
+        tex: ['water.jpg/water']
     };
 
     var rows = nwo.map.map;
@@ -42,21 +44,29 @@ nwo.drawMap = function() {
             var displayInfo = DISPLAY_MATCH[cell];
 
             nwo.ctx[0].fillStyle = displayInfo.bg;
-            nwo.ctx[0].fillRect(colN * CELL_SIZE - nwo.camera.x, rowN * CELL_SIZE - nwo.camera.y, CELL_SIZE, CELL_SIZE);
+            //nwo.ctx[0].fillRect(colN * CELL_SIZE - nwo.camera.x, rowN * CELL_SIZE - nwo.camera.y, CELL_SIZE, CELL_SIZE);
 
             if (displayInfo.tex) {
-                var texInfo = nwo.texture.details[displayInfo.tex];
+                displayInfo.tex.forEach(function(texPath) {
+                    texPath = texPath.split('/');
 
-                nwo.ctx[0].drawImage(nwo.texture.image,
-                    texInfo[0],
-                    texInfo[1],
-                    texInfo[2],
-                    texInfo[3],
-                    colN * CELL_SIZE - nwo.camera.x,
-                    rowN * CELL_SIZE - nwo.camera.y,
-                    CELL_SIZE,
-                    CELL_SIZE
-                );
+                    var tex = nwo.textures[texPath[0]];
+
+                    var texInfo = tex.details[texPath[1]];
+
+                    nwo.strokeStyle = 'none';
+
+                    nwo.ctx[0].drawImage(tex.image,
+                        texInfo[0],
+                        texInfo[1],
+                        texInfo[2],
+                        texInfo[3],
+                        colN * CELL_SIZE - nwo.camera.x,
+                        rowN * CELL_SIZE - nwo.camera.y,
+                        CELL_SIZE,
+                        CELL_SIZE
+                    );
+                });
             }
         }
     }

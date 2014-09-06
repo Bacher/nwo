@@ -14,7 +14,8 @@ nwo.loadTexture = function(fileName) {
 
         texture.image.onload = function() {
             if (++state === 2) {
-                done(texture)
+                nwo.textures[fileName] = texture;
+                done();
             }
         };
 
@@ -22,15 +23,18 @@ nwo.loadTexture = function(fileName) {
             fail();
         };
 
-        texture.image.src = RESOURCE_PATH + '/' + fileName + '.png';
+        texture.image.src = RESOURCE_PATH + '/' + fileName;
+
+        var jsonFileName = fileName.substr(0, fileName.lastIndexOf('.')) + '.json';
 
         $.ajax({
-            url: RESOURCE_PATH + '/' + fileName + '.json'
+            url: RESOURCE_PATH + '/' + jsonFileName
         }).done(function(json) {
             texture.details = json;
 
             if (++state === 2) {
-                done(texture)
+                nwo.textures[fileName] = texture;
+                done()
             }
 
         }).fail(function() {
