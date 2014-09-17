@@ -47,6 +47,8 @@
             this._pos.x += this._dir.x * delta;
             this._pos.y += this._dir.y * delta;
         }
+
+        nwo.trigger('player-moved', this._pos);
     };
 
     GameObject.prototype.draw = function() {

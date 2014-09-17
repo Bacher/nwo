@@ -64,6 +64,8 @@ $(function() {
         var ctx;
 
         if (nwo.needMapDraw) {
+            nwo.needMapDraw = false;
+
             ctx = nwo.ctx[0];
 
             ctx.clearRect(0, 0, nwo.W, nwo.H);
@@ -72,11 +74,12 @@ $(function() {
 
             ctx.scale(nwo.PIXEL_RATIO, nwo.PIXEL_RATIO);
 
+            ctx.translate(nwo.camera.screenWidth / 2, nwo.camera.screenHeight / 2);
+            ctx.translate(-nwo.camera._pos.x, -nwo.camera._pos.y);
+
             nwo.drawMap();
 
             ctx.restore();
-
-            nwo.needMapDraw = false;
         }
 
         ctx = nwo.ctx[1];
@@ -86,6 +89,9 @@ $(function() {
         ctx.save();
 
         ctx.scale(nwo.PIXEL_RATIO, nwo.PIXEL_RATIO);
+
+        ctx.translate(nwo.camera.screenWidth / 2, nwo.camera.screenHeight / 2);
+        ctx.translate(-nwo.camera._pos.x, -nwo.camera._pos.y);
 
         nwo._gameObjects.forEach(function(obj) {
             obj.draw();

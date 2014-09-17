@@ -1,7 +1,5 @@
 (function() {
 
-    var rowsOnScreen = Math.ceil(nwo.H / nwo.PIXEL_RATIO);
-    var colsOnScreen = Math.ceil(nwo.W / nwo.PIXEL_RATIO);
     var CELL_TYPES = nwo.Map.CELL_TYPES;
 
     var DISPLAY_MATCH = {};
@@ -24,24 +22,37 @@
     nwo.drawMap = function() {
         var rows = nwo.map.map;
 
-        var rowFrom = Math.floor(Math.max(0, nwo.camera.y));
-        var rowTo = Math.min(rowFrom + rowsOnScreen, rows.length);
+        var center = nwo.camera._pos;
 
-        var colFrom = Math.floor(Math.max(0, nwo.camera.x));
-        var colTo = Math.min(colFrom + colsOnScreen, rows[0].length);
+        if (center.x === 0) {
+            return;
+        }
 
-        for (var rowN = rowFrom; rowN <= rowTo; ++rowN) {
+        var topLeft = {
+            x: center.x - nwo.camera.screenWidth / 2,
+            y: center.y - nwo.camera.screenHeight / 2
+        };
+
+        var bottomRight = {
+            x: center.x + nwo.camera.screenWidth / 2,
+            y: center.y + nwo.camera.screenHeight / 2
+        };
+
+        var rowFrom = Math.floor(Math.max(0, topLeft.y));
+        var rowTo = Math.min(bottomRight.y, rows.length);
+
+        var colFrom = Math.floor(Math.max(0, topLeft.x));
+        var colTo = Math.min(bottomRight.x, rows[0].length);
+
+        for (var rowN = rowFrom; rowN < rowTo; ++rowN) {
 
             var row = rows[rowN];
 
-            for (var colN = colFrom; colN <= colTo; ++colN) {
+            for (var colN = colFrom; colN < colTo; ++colN) {
 
                 var cell = row[colN];
 
                 var displayInfo = DISPLAY_MATCH[cell];
-
-                //nwo.ctx[0].fillStyle = displayInfo.bg;
-                //nwo.ctx[0].fillRect(colN * CELL_SIZE - nwo.camera.x, rowN * CELL_SIZE - nwo.camera.y, CELL_SIZE, CELL_SIZE);
 
                 if (displayInfo.tex) {
                     displayInfo.tex.forEach(function(texPath) {
