@@ -3,6 +3,7 @@
 
     function GameObject(params) {
         params = params || {};
+        params.collisions = params.collisions || {};
 
         _.extend(this, {
             _pos: params.pos || {
@@ -16,6 +17,7 @@
             _rot: 0,
             _speed: params.speed || 0,
             _size: params.size || 0,
+            _terrainCollision: params.collisions.terrain || false,
 
             _logicStages: ['_updatePosition'],
             _drawStages: []
@@ -49,9 +51,61 @@
         if (this._speed && (this._dir.x || this._dir.y)) {
             var delta = this._speed / 140;
 
-            this._pos.x += this._dir.x * delta;
-            this._pos.y += this._dir.y * delta;
+            var newPos = {
+                x: this._pos.x + this._dir.x * delta,
+                y: this._pos.y + this._dir.y * delta
+            };
+
+            var success = false;
+
+            if (this._terrainCollision) {
+                if (this._checkTerrainCollision(newPos)) {
+                    success = true;
+
+                } else if (this._dir.x && this._dir.y) {
+                    var newPosY = {
+                        x: this._pos.x,
+                        y: this._pos.y + (this._dir.y > 0 ? delta : -delta)
+                    };
+
+                    if (this._checkTerrainCollision(newPosY)) {
+                        newPos = newPosY;
+                        success = true;
+
+                    } else {
+                        var newPosX = {
+                            x: this._pos.x + (this._dir.x > 0 ? delta : -delta),
+                            y: this._pos.y
+                        };
+
+                        if (this._checkTerrainCollision(newPosX)) {
+                            newPos = newPosX;
+                            success = true;
+                        }
+                    }
+                }
+
+            } else {
+                success = true;
+            }
+
+            if (success) {
+                this._pos.x = newPos.x;
+                this._pos.y = newPos.y;
+            }
         }
+    };
+
+    GameObject.prototype._checkTerrainCollision = function(newPos) {
+        var halfSize = this._size / 2;
+
+        return nwo.map.checkCollision([{
+            x: newPos.x - halfSize,
+            y: newPos.y - halfSize
+        }, {
+            x: newPos.x + halfSize,
+            y: newPos.y + halfSize
+        }]);
     };
 
     GameObject.prototype._checkLifeEnd = function() {

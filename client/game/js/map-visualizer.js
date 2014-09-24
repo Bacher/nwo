@@ -20,6 +20,8 @@
     };
 
     nwo.drawMap = function() {
+        var ctx = nwo.ctx[0];
+
         var rows = nwo.map.map;
 
         var center = nwo.camera.pos;
@@ -29,13 +31,13 @@
         }
 
         var topLeft = {
-            x: center.x - nwo.camera.screenWidth / 2,
-            y: center.y - nwo.camera.screenHeight / 2
+            x: center.x - nwo.CW / 2,
+            y: center.y - nwo.CH / 2
         };
 
         var bottomRight = {
-            x: center.x + nwo.camera.screenWidth / 2,
-            y: center.y + nwo.camera.screenHeight / 2
+            x: center.x + nwo.CW / 2,
+            y: center.y + nwo.CH / 2
         };
 
         var rowFrom = Math.floor(Math.max(0, topLeft.y));
@@ -61,7 +63,7 @@
                         var tex = nwo.textures[texPath[0]];
                         var t = tex.details[texPath[1]];
 
-                        nwo.ctx[0].drawImage(tex.image, t[0], t[1], t[2], t[3], colN, rowN, 1, 1);
+                        ctx.drawImage(tex.image, t[0], t[1], t[2], t[3], colN - 0.5, rowN - 0.5, 1, 1);
                     });
                 }
             }

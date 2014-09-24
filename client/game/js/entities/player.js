@@ -20,6 +20,10 @@
     };
 
     function Player(params) {
+        params = _.extend(params, {
+            collisions: { terrain: true }
+        });
+
         nwo.Character.call(this, params);
 
         _.extend(this, {

@@ -79,6 +79,31 @@ $(function() {
     function drawIteration() {
         var ctx;
 
+        nwo.cursor.pos.x = nwo.cursor.relPos.x + nwo.camera.pos.x;
+        nwo.cursor.pos.y = nwo.cursor.relPos.y + nwo.camera.pos.y;
+
+        nwo.cursor.hover.col = Math.round(nwo.cursor.pos.x);
+        nwo.cursor.hover.row = Math.round(nwo.cursor.pos.y);
+
+        if (nwo.needMapDraw || nwo.cursor.hover.col !== nwo.cursor.hover._col || nwo.cursor.hover.row !== nwo.cursor.hover._row) {
+            ctx = nwo.ctx[2];
+
+            ctx.clearRect(0, 0, nwo.W, nwo.H);
+            ctx.strokeStyle = '#F00';
+
+            ctx.save();
+
+            nwo.applyContext(ctx);
+
+            ctx.lineWidth = 1 / nwo.PIXEL_RATIO;
+            ctx.strokeRect(nwo.cursor.hover.col - 0.5, nwo.cursor.hover.row - 0.5, 1, 1);
+
+            ctx.restore();
+
+            nwo.cursor.hover._row = nwo.cursor.hover.row;
+            nwo.cursor.hover._col = nwo.cursor.hover.col;
+        }
+
         if (nwo.needMapDraw) {
             nwo.needMapDraw = false;
 
@@ -88,10 +113,7 @@ $(function() {
 
             ctx.save();
 
-            ctx.scale(nwo.PIXEL_RATIO, nwo.PIXEL_RATIO);
-
-            ctx.translate(nwo.camera.screenWidth / 2, nwo.camera.screenHeight / 2);
-            ctx.translate(-nwo.camera.pos.x, -nwo.camera.pos.y);
+            nwo.applyContext(ctx);
 
             nwo.drawMap();
 
@@ -104,10 +126,7 @@ $(function() {
 
         ctx.save();
 
-        ctx.scale(nwo.PIXEL_RATIO, nwo.PIXEL_RATIO);
-
-        ctx.translate(nwo.camera.screenWidth / 2, nwo.camera.screenHeight / 2);
-        ctx.translate(-nwo.camera.pos.x, -nwo.camera.pos.y);
+        nwo.applyContext(ctx);
 
         nwo._gameObjects.forEach(function(obj) {
             obj.draw();
@@ -118,4 +137,9 @@ $(function() {
         requestAnimationFrame(drawIteration, nwo.canvas[1]);
     }
 
+    nwo.applyContext = function(ctx) {
+        ctx.translate(nwo.W / 2, nwo.H / 2);
+        ctx.scale(nwo.PIXEL_RATIO, nwo.PIXEL_RATIO);
+        ctx.translate(-nwo.camera.pos.x, -nwo.camera.pos.y);
+    };
 });

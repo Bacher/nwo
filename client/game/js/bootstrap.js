@@ -8,4 +8,6 @@ window.nwo = {
     PIXEL_RATIO: 30
 };
 
+nwo.CW = Math.ceil(nwo.W / nwo.PIXEL_RATIO);
+nwo.CH = Math.ceil(nwo.H / nwo.PIXEL_RATIO);
 
