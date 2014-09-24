@@ -22,7 +22,7 @@
     nwo.drawMap = function() {
         var rows = nwo.map.map;
 
-        var center = nwo.camera._pos;
+        var center = nwo.camera.pos;
 
         if (center.x === 0) {
             return;

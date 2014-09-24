@@ -4,8 +4,6 @@
     function GameObject(params) {
         params = params || {};
 
-        var that = this;
-
         _.extend(this, {
             _pos: params.pos || {
                 x: 0,
@@ -23,14 +21,21 @@
             _drawStages: []
         });
 
+        if (params.lifetime) {
+            this._logicStages.unshift('_checkLifeEnd');
+            this._lifeEndTs = nwo.time + params.lifetime;
+        }
+
         if (this._dir.x || this._dir.y) {
             this.setRotation(this._dir);
         }
 
-        _.defer(function() {
-            nwo.trigger('new-object', that);
-        });
+        nwo.trigger('object-created', this);
     }
+
+    GameObject.prototype.destroy = function() {
+        nwo.trigger('object-destroyed', this);
+    };
 
     GameObject.prototype.updateLogic = function() {
         var that = this;
@@ -47,8 +52,12 @@
             this._pos.x += this._dir.x * delta;
             this._pos.y += this._dir.y * delta;
         }
+    };
 
-        nwo.trigger('player-moved', this._pos);
+    GameObject.prototype._checkLifeEnd = function() {
+        if (nwo.time >= this._lifeEndTs) {
+            this.destroy();
+        }
     };
 
     GameObject.prototype.draw = function() {

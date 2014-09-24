@@ -2,6 +2,7 @@ $(function() {
 
     nwo.textures = {};
     nwo._gameObjects = [];
+    nwo._destoyedObjects = [];
 
     nwo.initCanvas();
 
@@ -16,8 +17,12 @@ $(function() {
         nwo.loadTexture('water.jpg')
     );
 
-    nwo.on('new-object', function(obj) {
+    nwo.on('object-created', function(obj) {
         nwo._gameObjects.push(obj);
+    });
+
+    nwo.on('object-destroyed', function(obj) {
+        nwo._destoyedObjects.push(obj);
     });
 
     nwo.play = function() {
@@ -53,6 +58,17 @@ $(function() {
 
     function logicIteration() {
 
+        nwo._destoyedObjects.forEach(function(obj) {
+            var index;
+            if (index = nwo._gameObjects.indexOf(obj) >= 0) {
+                nwo._gameObjects.splice(index, 1);
+            }
+        });
+
+        nwo._destoyedObjects = [];
+
+        nwo.time = window.performance.now();
+
         nwo._gameObjects.forEach(function(obj) {
             obj.updateLogic();
         });
@@ -75,7 +91,7 @@ $(function() {
             ctx.scale(nwo.PIXEL_RATIO, nwo.PIXEL_RATIO);
 
             ctx.translate(nwo.camera.screenWidth / 2, nwo.camera.screenHeight / 2);
-            ctx.translate(-nwo.camera._pos.x, -nwo.camera._pos.y);
+            ctx.translate(-nwo.camera.pos.x, -nwo.camera.pos.y);
 
             nwo.drawMap();
 
@@ -91,7 +107,7 @@ $(function() {
         ctx.scale(nwo.PIXEL_RATIO, nwo.PIXEL_RATIO);
 
         ctx.translate(nwo.camera.screenWidth / 2, nwo.camera.screenHeight / 2);
-        ctx.translate(-nwo.camera._pos.x, -nwo.camera._pos.y);
+        ctx.translate(-nwo.camera.pos.x, -nwo.camera.pos.y);
 
         nwo._gameObjects.forEach(function(obj) {
             obj.draw();

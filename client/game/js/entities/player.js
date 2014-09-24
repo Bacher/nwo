@@ -41,6 +41,12 @@
     var base = nwo.Character.prototype;
     Player.prototype = Object.create(base);
 
+    Player.prototype._updatePosition = function() {
+        base._updatePosition.call(this);
+
+        nwo.trigger('player-moved', this._pos);
+    };
+
     Player.prototype._incPower = function() {
 
         if (this._state.powerInc) {
@@ -53,7 +59,8 @@
                     tex: 'texture1.png/arrow',
                     speed: 4 + this._power / 10,
                     dir: nwo.normalize(nwo.sub(nwo.cursor.pos, this._pos)),
-                    pos: _.clone(this._pos)
+                    pos: _.clone(this._pos),
+                    lifetime: 4000
                 });
             }
 

@@ -3,7 +3,7 @@ nwo.initCamera = function() {
 
     nwo.camera = {
 
-        _pos: {
+        pos: {
             x: 0,
             y: 0
         },
@@ -22,7 +22,8 @@ nwo.initCamera = function() {
     var camera = nwo.camera;
 
     nwo.on('player-moved', function(newPos) {
-        camera._pos = newPos;
+        camera.pos.x = newPos.x;
+        camera.pos.y = newPos.y;
 
         nwo.needMapDraw = true;
     });
