@@ -11,15 +11,15 @@
 
         var mapPattern = Map.maps[i].map;
 
-        this.height = mapPattern.length;
-        this.width = mapPattern[0].length / 2;
+        this.rowsCount = mapPattern.length;
+        this.colsCount = mapPattern[0].length / 2;
 
-        this.map = new Array(this.height);
+        this.map = new Array(this.rowsCount);
 
         mapPattern.forEach(function(patternRow, rowN) {
-            var row = new Array(that.width);
+            var row = new Array(that.colsCount);
 
-            for (var colN = 0; colN < that.width; colN++) {
+            for (var colN = 0; colN < that.colsCount; colN++) {
                 var cellSymbol = patternRow.charAt(colN * 2);
 
                 row[colN] = CELL_MATCH[cellSymbol];
@@ -43,7 +43,6 @@
             y: Math.ceil(point2.y - 0.5)
         };
 
-        debugger
         for (var x = cellStart.x; x <= cellEnd.x; ++x) {
             for (var y = cellStart.y; y <= cellEnd.y; ++y) {
                 var cellType = this.map[y][x];

@@ -22,6 +22,7 @@
     nwo.drawMap = function() {
         var ctx = nwo.ctx[0];
 
+        var map = nwo.map;
         var rows = nwo.map.map;
 
         var center = nwo.camera.pos;
@@ -40,19 +41,27 @@
             y: center.y + nwo.CH / 2
         };
 
-        var rowFrom = Math.floor(Math.max(0, topLeft.y));
-        var rowTo = Math.min(bottomRight.y, rows.length);
+        var rowFrom = Math.round(topLeft.y);
+        var rowTo = Math.round(bottomRight.y);
 
-        var colFrom = Math.floor(Math.max(0, topLeft.x));
-        var colTo = Math.min(bottomRight.x, rows[0].length);
+        var colFrom = Math.round(topLeft.x);
+        var colTo = Math.round(bottomRight.x);
 
-        for (var rowN = rowFrom; rowN < rowTo; ++rowN) {
+        for (var rowN = rowFrom; rowN <= rowTo; ++rowN) {
 
-            var row = rows[rowN];
+            var row = null;
 
-            for (var colN = colFrom; colN < colTo; ++colN) {
+            if (rowN >= 0 && rowN < map.rowsCount) {
+                row = rows[rowN];
+            }
 
-                var cell = row[colN];
+            for (var colN = colFrom; colN <= colTo; ++colN) {
+
+                var cell = CELL_TYPES.WATER;
+
+                if (row && colN >= 0 && colN < map.colsCount) {
+                    cell = row[colN];
+                }
 
                 var displayInfo = DISPLAY_MATCH[cell];
 
