@@ -22,9 +22,9 @@
             _drawStages: []
         });
 
-        if (params.lifetime) {
+        if (params.lifeTime) {
             this._logicStages.unshift('_checkLifeEnd');
-            this._lifeEndTs = nwo.time + params.lifetime;
+            this._lifeEndTs = nwo.time + params.lifeTime;
         }
 
         if (this._dir.x || this._dir.y) {

@@ -6,7 +6,7 @@ BODY {
 .game {
   display: inline-block;
   position: relative;
-  cursor: cell;
+  cursor: none;
 }
 .canvas-wrapper {
   display: inline-block;

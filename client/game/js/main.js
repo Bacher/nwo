@@ -97,7 +97,19 @@ $(function() {
         missiles.forEach(function(missile) {
             characters.forEach(function(character) {
                 if (!missile.checkCollision(character)) {
-                    character.hit(missile.getDamage());
+                    var damageInfo = missile.getDamage();
+
+                    character.hit(damageInfo.damage);
+
+                    if (damageInfo.type === 'crit') {
+                        new nwo.Sprite({
+                            pos: missile._pos,
+                            size: 0.8,
+                            tex: 'texture1.png/red-dot',
+                            lifeTime: 1000
+                        });
+                    }
+
                     missile.destroy();
                 }
             });
@@ -115,7 +127,10 @@ $(function() {
         nwo.cursor.hover.col = Math.round(nwo.cursor.pos.x);
         nwo.cursor.hover.row = Math.round(nwo.cursor.pos.y);
 
-        if (nwo.needMapDraw || nwo.cursor.hover.col !== nwo.cursor.hover._col || nwo.cursor.hover.row !== nwo.cursor.hover._row) {
+        if (nwo.needMapDraw ||
+            nwo.cursor.hover.col !== nwo.cursor.hover._col ||
+            nwo.cursor.hover.row !== nwo.cursor.hover._row
+        ) {
             ctx = nwo.ctx[2];
 
             ctx.clearRect(0, 0, nwo.W, nwo.H);
@@ -132,6 +147,22 @@ $(function() {
 
             nwo.cursor.hover._row = nwo.cursor.hover.row;
             nwo.cursor.hover._col = nwo.cursor.hover.col;
+        }
+
+        if (nwo.cursor.moved) {
+            ctx = nwo.ctx[3];
+            ctx.clearRect(0, 0, nwo.W, nwo.H);
+            ctx.save();
+
+            ctx.translate(nwo.cursor.client.x, nwo.cursor.client.y);
+
+            ctx.fillStyle = '#F00';
+            ctx.fillRect(-1, -5, 2, 10);
+            ctx.fillRect(-5, -1, 10, 2);
+
+            ctx.restore();
+
+            nwo.cursor.moved = false;
         }
 
         if (nwo.needMapDraw) {

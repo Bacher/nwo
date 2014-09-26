@@ -6,7 +6,11 @@
             texScale: 6
         }, params));
 
-        this._rotateByDir = true;
+        _.extend(this, {
+            _rotateByDir: true,
+            _baseDamage: params.baseDamage || 10,
+            _critChance: params.critChance || 0
+        });
     }
 
     var base = nwo.TexturedObject.prototype;
@@ -28,7 +32,13 @@
     };
 
     Missile.prototype.getDamage = function() {
-        return (1 + Math.random() * 0.5) * (7 + this._speed) * 1.5;
+        var isCrit = Math.random() < this._critChance;
+        var multiplier = isCrit ? 2 : 1;
+
+        return {
+            damage: (1 + Math.random() * 0.5) * (this._baseDamage + this._speed) * 1.5 * multiplier,
+            type: isCrit ? 'crit' : 'normal'
+        };
     };
 
     nwo.Missile = Missile;

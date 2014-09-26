@@ -6,7 +6,7 @@ nwo.initCanvas = function() {
     nwo.canvas = [];
     nwo.ctx = [];
 
-    _.times(3, function() {
+    _.times(4, function() {
         var canvas = document.createElement('canvas');
         canvas.width = nwo.W;
         canvas.height = nwo.H;

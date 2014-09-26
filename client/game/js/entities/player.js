@@ -65,7 +65,9 @@
                     speed: 4 + this._power / 10,
                     dir: nwo.normalize(nwo.sub(nwo.cursor.pos, this._pos)),
                     pos: _.clone(this._pos),
-                    lifetime: 4000,
+                    baseDamage: 10,
+                    critChance: 0.15,
+                    lifeTime: 4000,
                     collisions: {
                         terrain: true
                     }
