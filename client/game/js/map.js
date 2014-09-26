@@ -39,13 +39,14 @@
         } ;
 
         var cellEnd = {
-            x: Math.min(nwo.CW, Math.ceil(point2.x - 0.5)),
-            y: Math.min(nwo.CH, Math.ceil(point2.y - 0.5))
+            x: Math.min(this.colsCount - 1, Math.ceil(point2.x - 0.5)),
+            y: Math.min(this.rowsCount - 1, Math.ceil(point2.y - 0.5))
         };
 
         for (var x = cellStart.x; x <= cellEnd.x; ++x) {
             for (var y = cellStart.y; y <= cellEnd.y; ++y) {
                 var cellType = this.map[y][x];
+
                 if (cellType === CELL_TYPES.ROCK || cellType === CELL_TYPES.TREE) {
                     return false;
                 }

@@ -7,9 +7,9 @@
     function NPC(params) {
         params = params || {};
 
-        this.d = true;
-
-        baseConstructor.call(this, params);
+        baseConstructor.call(this, _.extend({
+            collisions: { terrain: true }
+        }, params));
 
         this._lastRandomDirection = 0;
         this._randomEvery = (1 + Math.random()) * 400;
