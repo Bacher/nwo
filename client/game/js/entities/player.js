@@ -1,8 +1,8 @@
 
 (function() {
 
-    var BAR_OFFSET = 4/nwo.PIXEL_RATIO;
-    var BAR_WIDTH = 4/nwo.PIXEL_RATIO;
+    var BAR_OFFSET = 4 / nwo.PIXEL_RATIO;
+    var BAR_WIDTH = 4 / nwo.PIXEL_RATIO;
 
     var MINIMAL_POWER_NEEDS = 35;
 
@@ -24,10 +24,11 @@
             collisions: { terrain: true }
         });
 
-        nwo.Character.call(this, params);
+        nwo.Character.call(this, _.extend({
+            speed: 4
+        }, params));
 
         _.extend(this, {
-            _speed: 4,
             _power: 0,
             _minimalPower: 35,
             _state: {
@@ -64,7 +65,10 @@
                     speed: 4 + this._power / 10,
                     dir: nwo.normalize(nwo.sub(nwo.cursor.pos, this._pos)),
                     pos: _.clone(this._pos),
-                    lifetime: 4000
+                    lifetime: 4000,
+                    collisions: {
+                        terrain: true
+                    }
                 });
             }
 
@@ -84,7 +88,7 @@
             var x1 = this._pos.x + this._size / 2 + BAR_OFFSET;
             var y1 = this._pos.y - barHeight / 2 - 1/pr;
 
-            ctx.strokeStyle = '#000';
+            ctx.fillStyle = '#000';
             ctx.fillRect(x1, y1 , BAR_WIDTH, this._size);
 
             ctx.fillStyle = (this._power > this._minimalPower ? '#0F0' : '#F00');

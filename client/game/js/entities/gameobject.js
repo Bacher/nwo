@@ -3,7 +3,7 @@
 
     function GameObject(params) {
         params = params || {};
-        params.collisions = params.collisions || {};
+        var collisions = params.collisions || {};
 
         _.extend(this, {
             _pos: params.pos || {
@@ -17,8 +17,7 @@
             _rot: 0,
             _speed: params.speed || 0,
             _size: params.size || 0,
-            _terrainCollision: params.collisions.terrain || false,
-
+            _terrainCollision: collisions.terrain || false,
             _logicStages: ['_updatePosition'],
             _drawStages: []
         });
@@ -156,10 +155,24 @@
 
         return s1.start + s1.size < s2.start;
     };
-    
+
+    GameObject.prototype.setDirectionByAngle = function(rot) {
+        var dir = {
+            x: Math.tan(rot),
+            y: 1 / Math.tan(rot)
+        };
+
+        this._dir = nwo.normalize(dir);
+    };
+
     GameObject.prototype.setRotation = function(vector) {
         if (vector && vector.x != null && vector.y != null) {
-            this._rot = Math.atan(vector.y / vector.x)
+            this._rot = Math.atan(vector.y / vector.x);
+
+            if (vector.x < 0) {
+                this._rot += Math.PI;
+            }
+
         } else if (vector != null) {
             this._rot = vector
         }

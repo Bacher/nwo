@@ -45,6 +45,7 @@ $(function() {
             var mob = new nwo.NPC({
                 pos: nwo.generateRandomPosition(),
                 size: 1,
+                speed: 2,
                 tex: 'texture1.png/bear'
             });
 
@@ -96,7 +97,7 @@ $(function() {
         missiles.forEach(function(missile) {
             characters.forEach(function(character) {
                 if (!missile.checkCollision(character)) {
-                    character.destroy();
+                    character.hit(missile.getDamage());
                     missile.destroy();
                 }
             });
