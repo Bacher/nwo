@@ -41,6 +41,18 @@ $(function() {
             tex: 'character4.png/archer1'
         });
 
+        _.times(10, function() {
+            var mob = new nwo.NPC({
+                pos: nwo.generateRandomPosition(),
+                size: 1,
+                tex: 'texture1.png/bear'
+            });
+
+            while (!mob._checkTerrainCollision(mob._pos)) {
+                mob.move(nwo.generateRandomPosition());
+            }
+        });
+
         nwo.initCursorHighlight();
 
         nwo.Input.bindEventListeners();
@@ -51,16 +63,16 @@ $(function() {
     };
 
     Promise.all(waitLoad)
+        .catch(function() {
+            throw new Error('Texture not loaded');
+        })
         .then(nwo.play);
-//        .catch(function() {
-//            throw new Error('Texture not loaded');
-//        });
 
     function logicIteration() {
 
-        nwo._destoyedObjects.forEach(function(obj) {
+        nwo._destoyedObjects.forEach(function(object) {
             var index;
-            if (index = nwo._gameObjects.indexOf(obj) >= 0) {
+            if ((index = nwo._gameObjects.indexOf(object)) >= 0) {
                 nwo._gameObjects.splice(index, 1);
             }
         });
@@ -69,8 +81,25 @@ $(function() {
 
         nwo.time = window.performance.now();
 
-        nwo._gameObjects.forEach(function(obj) {
-            obj.updateLogic();
+        nwo._gameObjects.forEach(function(object) {
+            object.updateLogic();
+        });
+
+        var missiles = nwo._gameObjects.filter(function(object) {
+            return object instanceof nwo.Missile;
+        });
+
+        var characters = nwo._gameObjects.filter(function(object) {
+            return object instanceof nwo.Character && !(object instanceof nwo.Player);
+        });
+
+        missiles.forEach(function(missile) {
+            characters.forEach(function(character) {
+                if (!missile.checkCollision(character)) {
+                    character.destroy();
+                    missile.destroy();
+                }
+            });
         });
 
         setTimeout(logicIteration, 7);
@@ -142,4 +171,11 @@ $(function() {
         ctx.scale(nwo.PIXEL_RATIO, nwo.PIXEL_RATIO);
         ctx.translate(-nwo.camera.pos.x, -nwo.camera.pos.y);
     };
+
+    nwo.generateRandomPosition = function() {
+        return {
+            x: 4 + Math.random() * 10,
+            y: 4 + Math.random() * 10
+        };
+    }
 });

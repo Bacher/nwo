@@ -96,15 +96,15 @@
         }
     };
 
-    GameObject.prototype._checkTerrainCollision = function(newPos) {
+    GameObject.prototype._checkTerrainCollision = function(pos) {
         var halfSize = this._size / 2;
 
         return nwo.map.checkCollision([{
-            x: newPos.x - halfSize,
-            y: newPos.y - halfSize
+            x: pos.x - halfSize,
+            y: pos.y - halfSize
         }, {
-            x: newPos.x + halfSize,
-            y: newPos.y + halfSize
+            x: pos.x + halfSize,
+            y: pos.y + halfSize
         }]);
     };
 
@@ -122,6 +122,41 @@
         });
     };
 
+    /**
+     * @param {Position} newPos
+     */
+    GameObject.prototype.move = function(newPos) {
+        this._pos.x = newPos.x;
+        this._pos.y = newPos.y;
+    };
+
+    GameObject.prototype.checkCollision = function(otherObject) {
+        return (
+            this._checkAxisCollision('x', this, otherObject) ||
+            this._checkAxisCollision('y', this, otherObject)
+        );
+    };
+
+    GameObject.prototype._checkAxisCollision = function(axis, obj1, obj2) {
+        var s1 = {
+            start: obj1._pos[axis] - obj1._size / 2,
+            size: obj1._size
+        };
+
+        var s2 = {
+            start: obj2._pos[axis] - obj2._size / 2,
+            size: obj2._size
+        };
+
+        if (s1.start > s2.start) {
+            var st = s1;
+            s1 = s2;
+            s2 = st;
+        }
+
+        return s1.start + s1.size < s2.start;
+    };
+    
     GameObject.prototype.setRotation = function(vector) {
         if (vector && vector.x != null && vector.y != null) {
             this._rot = Math.atan(vector.y / vector.x)

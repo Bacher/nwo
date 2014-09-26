@@ -34,13 +34,13 @@
         var point2 = boundBox[1];
 
         var cellStart = {
-            x: Math.floor(point1.x + 0.5),
-            y: Math.floor(point1.y + 0.5)
+            x: Math.max(0, Math.floor(point1.x + 0.5)),
+            y: Math.max(0, Math.floor(point1.y + 0.5))
         } ;
 
         var cellEnd = {
-            x: Math.ceil(point2.x - 0.5),
-            y: Math.ceil(point2.y - 0.5)
+            x: Math.min(nwo.CW, Math.ceil(point2.x - 0.5)),
+            y: Math.min(nwo.CH, Math.ceil(point2.y - 0.5))
         };
 
         for (var x = cellStart.x; x <= cellEnd.x; ++x) {
