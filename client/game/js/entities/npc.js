@@ -25,7 +25,7 @@
         if (this._lastRandomDirection + this._randomEvery < nwo.time) {
 
             this._directionAngle += Math.PI * (Math.random() - 0.5);
-            this.setDirectionByAngle(this._directionAngle);
+            this.setDirection(this._directionAngle);
 
             this._lastRandomDirection = nwo.time;
         }
@@ -33,7 +33,7 @@
 
     NPC.prototype._setRandomDirection = function() {
         this._directionAngle = Math.random() * 2 * Math.PI;
-        this.setDirectionByAngle(this._directionAngle);
+        this.setDirection(this._directionAngle);
     };
 
     nwo.NPC = NPC;

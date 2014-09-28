@@ -13,6 +13,10 @@
         this._hp = this._maxHp;
 
         this._drawStages.push('_drawHealthBar');
+
+        if (params.sprite) {
+            this._drawStages.unshift('_chooseSpriteTexture');
+        }
     }
 
     var base = nwo.TexturedObject.prototype;
@@ -24,6 +28,30 @@
         if (this._hp <= 0) {
             this.destroy();
         }
+    };
+
+    Character.prototype._chooseSpriteTexture = function() {
+        var texName;
+
+        if (this._speed < 0.1) {
+            texName = '__';
+        } else {
+            var rot = nwo.normalizeAngle(this._rot);
+
+            if (rot < Math.PI / 4) {
+                texName = '_r';
+            } else if (rot < 3 * Math.PI / 4) {
+                texName = 'b_';
+            } else if (rot < 7 * Math.PI / 4) {
+                texName = '_l';
+            } else if (rot < 11 * Math.PI / 4) {
+                texName = 't_'
+            } else if (rot < 15 * Math.PI / 4) {
+                texName = '_r';
+            }
+        }
+
+        this._extractTexture([this._tex._file, texName]);
     };
 
     Character.prototype._drawHealthBar = function() {

@@ -1,3 +1,14 @@
+/**
+ * @typedef {Object} Vector
+ * @property x
+ * @property y
+ */
+
+/**
+ * @typedef {Object} NormalizedVector
+ * @property x
+ * @property y
+ */
 
 (function() {
 
@@ -15,7 +26,8 @@
                 y: 0
             },
             _rot: 0,
-            _speed: params.speed || 0,
+            _speed: 0,
+            _selfSpeed: params.selfSpeed || 0,
             _size: params.size || 0,
             _terrainCollision: collisions.terrain || false,
             _logicStages: ['_updatePosition'],
@@ -27,9 +39,7 @@
             this._lifeEndTs = nwo.time + params.lifeTime;
         }
 
-        if (this._dir.x || this._dir.y) {
-            this.setRotation(this._dir);
-        }
+        this.setRotation(this._dir);
 
         nwo.trigger('object-created', this);
     }
@@ -47,8 +57,8 @@
     };
 
     GameObject.prototype._updatePosition = function() {
-        if (this._speed && (this._dir.x || this._dir.y)) {
-            var delta = this._speed / 140;
+        if (this._selfSpeed && (this._dir.x || this._dir.y)) {
+            var delta = this._selfSpeed / 140;
 
             var newPos = {
                 x: this._pos.x + this._dir.x * delta,
@@ -89,9 +99,14 @@
             }
 
             if (success) {
+                this._speed = this._selfSpeed;
                 this._pos.x = newPos.x;
                 this._pos.y = newPos.y;
+            } else {
+                this._speed = 0;
             }
+        } else {
+            this._speed = 0;
         }
     };
 
@@ -156,26 +171,37 @@
         return s1.start + s1.size < s2.start;
     };
 
-    GameObject.prototype.setDirectionByAngle = function(rot) {
-        var dir = {
-            x: Math.tan(rot),
-            y: 1 / Math.tan(rot)
-        };
-
-        this._dir = nwo.normalize(dir);
-    };
-
-    GameObject.prototype.setRotation = function(vector) {
+    /**
+     *
+     * @param {NormalizedVector|number} vector
+     */
+    GameObject.prototype.setDirection = function(vector) {
         if (vector && vector.x != null && vector.y != null) {
-            this._rot = Math.atan(vector.y / vector.x);
-
-            if (vector.x < 0) {
-                this._rot += Math.PI;
-            }
+            this._dir.x = vector.x;
+            this._dir.y = vector.y;
 
         } else if (vector != null) {
-            this._rot = vector
+            var dir = {
+                x: Math.tan(vector),
+                y: 1 / Math.tan(vector)
+            };
+
+            this._dir = nwo.normalize(dir);
         }
+
+        this.setRotation(vector);
+
+        if (this._rotateTextureByDirection) {
+            this.setTexRotation(vector);
+        }
+    };
+
+    GameObject.prototype.setRotation = function(value) {
+        this._rot = nwo.getAngle(value);
+    };
+
+    GameObject.prototype.setTexRotation = function(vector) {
+        this._texRotation = nwo.getAngle(vector);
     };
 
     nwo.GameObject = GameObject;

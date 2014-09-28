@@ -32,3 +32,38 @@ nwo.sub = function(vector1, vector2) {
         y: vector1.y - vector2.y
     };
 };
+
+/**
+ * @param {Vector|number} vector
+ */
+nwo.getAngle = function(vector) {
+    if (vector && vector.x != null && vector.y != null) {
+        if (vector.x === 0 && vector.y === 0) {
+            return 0;
+        }
+
+        var angle = Math.atan(vector.y / vector.x);
+
+        if (vector.x < 0) {
+            angle += Math.PI;
+        }
+        return angle;
+
+    } else if (vector != null) {
+        return vector
+    }
+
+    throw new Error('Not angle');
+};
+
+nwo.normalizeAngle = function(angle) {
+    if (angle === -Infinity) {
+        throw new Error('Angle does not be Infinity');
+    }
+
+    while (angle < 0) {
+        angle += 2 * Math.PI;
+    }
+
+    return angle;
+};

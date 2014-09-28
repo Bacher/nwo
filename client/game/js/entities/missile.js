@@ -7,7 +7,7 @@
         }, params));
 
         _.extend(this, {
-            _rotateByDir: true,
+            _rotateTextureByDirection: true,
             _baseDamage: params.baseDamage || 10,
             _critChance: params.critChance || 0
         });
@@ -21,7 +21,7 @@
      * @private
      */
     Missile.prototype._updatePosition = function() {
-        var delta = this._speed / 140;
+        var delta = this._selfSpeed / 140;
 
         this._pos.x += this._dir.x * delta;
         this._pos.y += this._dir.y * delta;
@@ -36,7 +36,7 @@
         var multiplier = isCrit ? 2 : 1;
 
         return {
-            damage: (1 + Math.random() * 0.5) * (this._baseDamage + this._speed) * 1.5 * multiplier,
+            damage: (1 + Math.random() * 0.5) * (this._baseDamage + this._selfSpeed) * 1.5 * multiplier,
             type: isCrit ? 'crit' : 'normal'
         };
     };

@@ -14,7 +14,8 @@ $(function() {
         nwo.loadTexture('character4.png'),
         nwo.loadTexture('texture1.png'),
         nwo.loadTexture('minecraft1.png'),
-        nwo.loadTexture('water.jpg')
+        nwo.loadTexture('water.jpg'),
+        nwo.loadTexture('rotatle-character.png')
     );
 
     nwo.on('object-created', function(obj) {
@@ -38,14 +39,16 @@ $(function() {
                 y: 10
             },
             size: 1,
-            tex: 'character4.png/archer1'
+            //tex: 'character4.png/archer1',
+            tex: 'rotatle-character.png/__',
+            sprite: true
         });
 
         _.times(10, function() {
             var mob = new nwo.NPC({
                 pos: nwo.generateRandomPosition(),
                 size: 1,
-                speed: 2,
+                selfSpeed: 2,
                 tex: 'texture1.png/bear'
             });
 

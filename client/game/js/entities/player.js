@@ -20,12 +20,14 @@
     };
 
     function Player(params) {
+        this._type = 'player';
+
         params = _.extend(params, {
             collisions: { terrain: true }
         });
 
         nwo.Character.call(this, _.extend({
-            speed: 4
+            selfSpeed: 4
         }, params));
 
         _.extend(this, {
@@ -62,7 +64,7 @@
 
                 new nwo.Missile({
                     tex: 'texture1.png/arrow',
-                    speed: 4 + this._power / 10,
+                    selfSpeed: 4 + this._power / 10,
                     dir: nwo.normalize(nwo.sub(nwo.cursor.pos, this._pos)),
                     pos: _.clone(this._pos),
                     baseDamage: 10,
@@ -99,7 +101,7 @@
     };
 
     Player.prototype._onKeyboard = function(activeKeys) {
-        var direction = this._dir = {
+        var direction = {
             x: 0,
             y: 0
         };
@@ -119,11 +121,12 @@
             direction.y *= 0.71;
         }
 
-        this._state.powerInc = activeKeys[KEYS.c];
-
-        this._state.fullSpeed = !Boolean(activeKeys[KEYS.shift]);
+        this.setDirection(direction);
 
         this._state.shieldUp = activeKeys[KEYS.space];
+        this._state.powerInc = activeKeys[KEYS.space];
+
+        this._state.fullSpeed = !Boolean(activeKeys[KEYS.shift]);
     };
 
     nwo.Player = Player;
