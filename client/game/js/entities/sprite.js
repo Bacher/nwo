@@ -3,8 +3,9 @@
 (function() {
 
     function Sprite(params) {
-        this.d = 1;
-        nwo.TexturedObject.call(this, params);
+        nwo.TexturedObject.call(this, _.extend({
+            size: 1
+        }, params));
     }
 
     var base = nwo.TexturedObject.prototype;

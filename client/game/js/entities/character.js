@@ -31,6 +31,12 @@
         this._hp -= damage;
 
         if (this._hp <= 0) {
+
+            new nwo.Rip({
+                pos: this._pos,
+                lifeTime: 2000
+            });
+
             this.destroy();
         }
     };

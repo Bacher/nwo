@@ -13,13 +13,18 @@
 (function() {
 
     function GameObject(params) {
-        params = params || {};
-        var collisions = params.collisions || {};
-
-        _.extend(this, {
-            _pos: params.pos || {
+        params = _.extend({
+            pos: {
                 x: 0,
                 y: 0
+            },
+            collisions: {}
+        }, params);
+
+        _.extend(this, {
+            _pos: {
+                x: params.pos.x,
+                y: params.pos.y
             },
             _dir: params.dir || {
                 x: 0,
@@ -29,8 +34,9 @@
             _speed: 0,
             _selfSpeed: params.selfSpeed || 0,
             _size: params.size || 0,
-            _terrainCollision: collisions.terrain || false,
+            _terrainCollision: params.collisions.terrain || false,
             _rotateTextureByDirection: params.rotateTextureByDirection,
+            _zIndex: params.zIndex || 'normal',
             _logicStages: ['_updatePosition'],
             _drawStages: []
         });

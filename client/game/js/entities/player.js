@@ -20,7 +20,7 @@
     };
 
     function Player(params) {
-        this._type = 'player';
+        this._name = 'player';
 
         params = _.extend(params, {
             collisions: { terrain: true }

@@ -3,6 +3,7 @@ $(function() {
     nwo.textures = {};
     nwo._gameObjects = [];
     nwo._destoyedObjects = [];
+    nwo._renderPriorities = ['background', 'normal', 'overlay'];
 
     nwo.initCanvas();
 
@@ -34,7 +35,7 @@ $(function() {
 
         nwo.needMapDraw = true;
 
-        new nwo.Player({
+        nwo.player = new nwo.Player({
             pos: {
                 x: 10,
                 y: 10
@@ -109,7 +110,8 @@ $(function() {
                             pos: missile._pos,
                             size: 0.8,
                             tex: 'texture1.png/red-dot',
-                            lifeTime: 1000
+                            lifeTime: 1000,
+                            zIndex: 'overlay'
                         });
                     }
 
@@ -192,8 +194,12 @@ $(function() {
 
         nwo.applyContext(ctx);
 
-        nwo._gameObjects.forEach(function(obj) {
-            obj.draw();
+        nwo._renderPriorities.forEach(function(layer) {
+            nwo._gameObjects.forEach(function(obj) {
+                if (obj._zIndex === layer) {
+                    obj.draw();
+                }
+            });
         });
 
         ctx.restore();
