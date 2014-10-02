@@ -15,7 +15,8 @@ $(function() {
         nwo.loadTexture('texture1.png'),
         nwo.loadTexture('minecraft1.png'),
         nwo.loadTexture('water.jpg'),
-        nwo.loadTexture('rotatle-character.png')
+        nwo.loadTexture('rotatle-character.png'),
+        nwo.loadTexture('RE_Side_Character_Sprites_v1.0.png')
     );
 
     nwo.on('object-created', function(obj) {
@@ -40,7 +41,7 @@ $(function() {
             },
             size: 1,
             //tex: 'character4.png/archer1',
-            tex: 'rotatle-character.png/__',
+            tex: 'RE_Side_Character_Sprites_v1.0.png/steam-ninja__b-0',
             sprite: true
         });
 
@@ -67,10 +68,9 @@ $(function() {
     };
 
     Promise.all(waitLoad)
-        .catch(function() {
-            throw new Error('Texture not loaded');
-        })
-        .then(nwo.play);
+        .catch(forwardError(new Error('Texture not loaded')))
+        .then(nwo.play)
+        .catch(forward);
 
     function logicIteration() {
 
@@ -214,3 +214,19 @@ $(function() {
         };
     }
 });
+
+function forward(e) {
+    _.defer(function() {
+        throw e;
+    });
+
+    throw e;
+}
+
+function forwardError(e) {
+    var error = new Error(e);
+
+    return function() {
+        forward(error);
+    }
+}

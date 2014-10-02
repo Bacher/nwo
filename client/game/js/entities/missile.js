@@ -1,13 +1,15 @@
 (function() {
 
     function Missile(params) {
+        this._name = this._name || 'missile';
+
         nwo.TexturedObject.call(this, _.extend({
             size: 0.1,
-            texScale: 6
+            texScale: 6,
+            rotateTextureByDirection: true
         }, params));
 
         _.extend(this, {
-            _rotateTextureByDirection: true,
             _baseDamage: params.baseDamage || 10,
             _critChance: params.critChance || 0
         });

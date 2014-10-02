@@ -10,6 +10,10 @@
             scale: params.texScale || 1
         };
 
+        _.extend(this, {
+            _rotateTextureByDirection: params.rotateTextureByDirection
+        });
+
         this._extractTexture(params.tex.split('/'));
 
         this._drawStages.push('_drawTexture');

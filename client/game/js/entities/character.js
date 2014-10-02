@@ -5,12 +5,17 @@
     var BAR_OFFSET = 3 / nwo.PIXEL_RATIO;
 
     function Character(params) {
+        this._name = 'character';
+
         params = params || {};
 
         nwo.TexturedObject.call(this, params);
 
         this._maxHp = params.maxHp || 100;
         this._hp = this._maxHp;
+
+        this._dirTexPart = 'b';
+        this._nextStepTime = 0;
 
         this._drawStages.push('_drawHealthBar');
 
@@ -31,27 +36,60 @@
     };
 
     Character.prototype._chooseSpriteTexture = function() {
-        var texName;
-
         if (this._speed < 0.1) {
-            texName = '__';
+            this._texStep = 0;
         } else {
             var rot = nwo.normalizeAngle(this._rot);
 
-            if (rot < Math.PI / 4) {
-                texName = '_r';
-            } else if (rot < 3 * Math.PI / 4) {
-                texName = 'b_';
-            } else if (rot < 7 * Math.PI / 4) {
-                texName = '_l';
-            } else if (rot < 11 * Math.PI / 4) {
-                texName = 't_'
-            } else if (rot < 15 * Math.PI / 4) {
-                texName = '_r';
+            var PI4 = Math.PI / 4;
+            var PI8 = Math.PI / 8;
+
+//            if (rot < PI8) {
+//                _dirTexPart = '_r';
+//            } else if (rot < 3 * PI8) {
+//                _dirTexPart = 'br';
+//            } else if (rot < 5 * PI8) {
+//                _dirTexPart = 'b_';
+//            } else if (rot < 7 * PI8) {
+//                _dirTexPart = 'bl'
+//            } else if (rot < 9 * PI8) {
+//                _dirTexPart = '_l';
+//            } else if (rot < 11 * PI8) {
+//                _dirTexPart = 'tl';
+//            } else if (rot < 13 * PI8) {
+//                _dirTexPart = 't_';
+//            } else if (rot < 15 * PI8) {
+//                _dirTexPart = 'tr';
+//            } else {
+//                _dirTexPart = '_r';
+//            }
+
+            if        (rot < 0.9 * PI4) {
+                this._dirTexPart = 'r';
+            } else if (rot < 3.1 * PI4) {
+                this._dirTexPart = 'b';
+            } else if (rot < 4.9 * PI4) {
+                this._dirTexPart = 'l';
+            } else if (rot < 7.1 * PI4) {
+                this._dirTexPart = 't'
+            } else if (rot < 8.9 * PI4) {
+                this._dirTexPart = 'r';
+            } else {
+                this._dirTexPart = 'b'
+            }
+
+            if (this._nextStepTime < nwo.time) {
+                this._texStep++;
+
+                if (this._texStep === 3) {
+                    this._texStep = 0;
+                }
+
+                this._nextStepTime = nwo.time + 200;
             }
         }
 
-        this._extractTexture([this._tex._file, texName]);
+        this._extractTexture([this._tex._file, 'steam-ninja__' + this._dirTexPart + '-' + this._texStep]);
     };
 
     Character.prototype._drawHealthBar = function() {

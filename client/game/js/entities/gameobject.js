@@ -30,6 +30,7 @@
             _selfSpeed: params.selfSpeed || 0,
             _size: params.size || 0,
             _terrainCollision: collisions.terrain || false,
+            _rotateTextureByDirection: params.rotateTextureByDirection,
             _logicStages: ['_updatePosition'],
             _drawStages: []
         });
@@ -40,6 +41,8 @@
         }
 
         this.setRotation(this._dir);
+
+        this.setDirection(this._dir);
 
         nwo.trigger('object-created', this);
     }
