@@ -69,6 +69,10 @@ nwo.normalizeAngle = function(angle) {
 };
 
 function inherit(name, parent, proto) {
+    if (!(parent instanceof Function)) {
+        proto = parent;
+        parent = null;
+    }
 
     function Ctor(params) {
         this._name = name;
@@ -78,8 +82,10 @@ function inherit(name, parent, proto) {
         }
     }
 
-    Ctor.base = parent.prototype;
-    Ctor.prototype = Object.create(Ctor.base);
+    if (parent) {
+        Ctor.base = parent.prototype;
+        Ctor.prototype = Object.create(Ctor.base);
+    }
 
     _.extend(Ctor.prototype, proto);
 

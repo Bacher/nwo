@@ -35,7 +35,6 @@ $(function() {
 
         nwo.needMapDraw = true;
 
-        debugger
         nwo.player = new nwo.Player({
             pos: {
                 x: 10,
