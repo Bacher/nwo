@@ -67,3 +67,21 @@ nwo.normalizeAngle = function(angle) {
 
     return angle;
 };
+
+function inherit(name, parent, proto) {
+
+    function Ctor(params) {
+        this._name = name;
+
+        if (this._ctor) {
+            this._ctor(params);
+        }
+    }
+
+    Ctor.base = parent.prototype;
+    Ctor.prototype = Object.create(Ctor.base);
+
+    _.extend(Ctor.prototype, proto);
+
+    return Ctor;
+}

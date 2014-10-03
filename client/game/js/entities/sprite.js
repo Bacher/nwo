@@ -1,15 +1,8 @@
 
-
-(function() {
-
-    function Sprite(params) {
-        nwo.TexturedObject.call(this, _.extend({
+nwo.Sprite = inherit('sprite', nwo.TexturedObject, {
+    _ctor: function(params) {
+        nwo.Sprite.base._ctor.call(this, _.extend({
             size: 1
         }, params));
     }
-
-    var base = nwo.TexturedObject.prototype;
-    Sprite.prototype = Object.create(base);
-
-    nwo.Sprite = Sprite;
-})();
+});

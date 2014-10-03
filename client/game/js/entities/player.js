@@ -1,4 +1,3 @@
-
 (function() {
 
     var BAR_OFFSET = 4 / nwo.PIXEL_RATIO;
@@ -19,115 +18,113 @@
         }
     };
 
-    function Player(params) {
-        this._name = 'player';
+    nwo.Player = inherit('player', nwo.Character, {
+        _ctor: function(params) {
+            params = _.extend(params, {
+                collisions: { terrain: true }
+            });
 
-        params = _.extend(params, {
-            collisions: { terrain: true }
-        });
+            base._ctor.call(this, _.extend({
+                selfSpeed: 4
+            }, params));
 
-        nwo.Character.call(this, _.extend({
-            selfSpeed: 4
-        }, params));
+            _.extend(this, {
+                _power: 0,
+                _minimalPower: 35,
+                _state: {
+                    powerInc: false
+                }
+            });
 
-        _.extend(this, {
-            _power: 0,
-            _minimalPower: 35,
-            _state: {
-                powerInc: false
+            this._logicStages.push('_incPower');
+
+            this._drawStages.push('_drawPowerBar');
+
+            nwo.on('keyboard', this._onKeyboard.bind(this));
+        },
+
+        _updatePosition: function() {
+            base._updatePosition.call(this);
+
+            nwo.trigger('player-moved', this._pos);
+        },
+
+        _incPower: function() {
+
+            if (this._state.powerInc) {
+                this._power = Math.min(100, this._power + 1);
+
+            } else if (this._power) {
+                if (this._power > MINIMAL_POWER_NEEDS) {
+
+                    new nwo.Missile({
+                        tex: 'texture1.png/arrow',
+                        selfSpeed: 4 + this._power / 10,
+                        dir: nwo.normalize(nwo.sub(nwo.cursor.pos, this._pos)),
+                        pos: _.clone(this._pos),
+                        baseDamage: 10,
+                        critChance: 0.15,
+                        lifeTime: 4000,
+                        collisions: {
+                            terrain: true
+                        }
+                    });
+                }
+
+                this._power = 0;
             }
-        });
+        },
 
-        this._logicStages.push('_incPower');
+        _drawPowerBar: function() {
+            if (this._power) {
+                var ctx = nwo.ctx[1];
 
-        this._drawStages.push('_drawPowerBar');
+                var pr = nwo.PIXEL_RATIO;
 
-        nwo.on('keyboard', this._onKeyboard.bind(this));
-    }
+                var barHeight = this._size - 2 / pr;
+                var filledBy = barHeight * this._power / 100;
 
-    var base = nwo.Character.prototype;
-    Player.prototype = Object.create(base);
+                var x1 = this._pos.x + this._size / 2 + BAR_OFFSET;
+                var y1 = this._pos.y - barHeight / 2 - 1 / pr;
 
-    Player.prototype._updatePosition = function() {
-        base._updatePosition.call(this);
+                ctx.fillStyle = '#000';
+                ctx.fillRect(x1, y1, BAR_WIDTH, this._size);
 
-        nwo.trigger('player-moved', this._pos);
-    };
+                ctx.fillStyle = (this._power > this._minimalPower ? '#0F0' : '#F00');
+                ctx.fillRect(x1 + 1 / pr, y1 + 1 / pr + barHeight - filledBy, BAR_WIDTH - 2 / pr, filledBy);
+            }
+        },
 
-    Player.prototype._incPower = function() {
+        _onKeyboard: function(activeKeys) {
+            var direction = {
+                x: 0,
+                y: 0
+            };
 
-        if (this._state.powerInc) {
-            this._power = Math.min(100, this._power + 1);
+            for (var axis in KEY_CODES_MATCHING) {
+                var s = KEY_CODES_MATCHING[axis];
 
-        } else if (this._power) {
-            if (this._power > MINIMAL_POWER_NEEDS) {
-
-                new nwo.Missile({
-                    tex: 'texture1.png/arrow',
-                    selfSpeed: 4 + this._power / 10,
-                    dir: nwo.normalize(nwo.sub(nwo.cursor.pos, this._pos)),
-                    pos: _.clone(this._pos),
-                    baseDamage: 10,
-                    critChance: 0.15,
-                    lifeTime: 4000,
-                    collisions: {
-                        terrain: true
+                for (var n in s) {
+                    if (activeKeys[s[n]]) {
+                        direction[axis] += (n === '+' ? 1 : -1);
                     }
-                });
-            }
-
-            this._power = 0;
-        }
-    };
-
-    Player.prototype._drawPowerBar = function() {
-        if (this._power) {
-            var ctx = nwo.ctx[1];
-            
-            var pr = nwo.PIXEL_RATIO;
-
-            var barHeight = this._size - 2/pr;
-            var filledBy = barHeight * this._power / 100;
-
-            var x1 = this._pos.x + this._size / 2 + BAR_OFFSET;
-            var y1 = this._pos.y - barHeight / 2 - 1/pr;
-
-            ctx.fillStyle = '#000';
-            ctx.fillRect(x1, y1 , BAR_WIDTH, this._size);
-
-            ctx.fillStyle = (this._power > this._minimalPower ? '#0F0' : '#F00');
-            ctx.fillRect(x1 + 1/pr, y1 + 1/pr + barHeight - filledBy, BAR_WIDTH - 2/pr, filledBy);
-        }
-    };
-
-    Player.prototype._onKeyboard = function(activeKeys) {
-        var direction = {
-            x: 0,
-            y: 0
-        };
-
-        for (var axis in KEY_CODES_MATCHING) {
-            var s = KEY_CODES_MATCHING[axis];
-
-            for (var n in s) {
-                if (activeKeys[s[n]]) {
-                    direction[axis] += (n === '+' ? 1 : -1);
                 }
             }
+
+            if (direction.x && direction.y) {
+                direction.x *= 0.71;
+                direction.y *= 0.71;
+            }
+
+            this.setDirection(direction);
+
+            this._state.shieldUp = activeKeys[KEYS.space];
+            this._state.powerInc = activeKeys[KEYS.space];
+
+            this._state.fullSpeed = !Boolean(activeKeys[KEYS.shift]);
         }
+    });
 
-        if (direction.x && direction.y) {
-            direction.x *= 0.71;
-            direction.y *= 0.71;
-        }
+    var base = nwo.Player.base;
 
-        this.setDirection(direction);
-
-        this._state.shieldUp = activeKeys[KEYS.space];
-        this._state.powerInc = activeKeys[KEYS.space];
-
-        this._state.fullSpeed = !Boolean(activeKeys[KEYS.shift]);
-    };
-
-    nwo.Player = Player;
 })();

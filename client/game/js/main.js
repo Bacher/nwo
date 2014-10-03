@@ -35,6 +35,7 @@ $(function() {
 
         nwo.needMapDraw = true;
 
+        debugger
         nwo.player = new nwo.Player({
             pos: {
                 x: 10,
@@ -70,7 +71,9 @@ $(function() {
 
     Promise.all(waitLoad)
         .catch(forwardError(new Error('Texture not loaded')))
-        .then(nwo.play)
+        .then(function() {
+            _.defer(nwo.play);
+        })
         .catch(forward);
 
     function logicIteration() {

@@ -1,41 +1,36 @@
 
 (function() {
 
-    var baseConstructor = nwo.Character;
-    var base = baseConstructor.prototype;
+    nwo.NPC = inherit('npc', nwo.Character, {
+        _ctor: function(params) {
+            params = params || {};
 
-    function NPC(params) {
-        params = params || {};
+            nwo.NPC.base._ctor.call(this, _.extend({
+                collisions: { terrain: true }
+            }, params));
 
-        baseConstructor.call(this, _.extend({
-            collisions: { terrain: true }
-        }, params));
+            this._lastRandomDirection = 0;
+            this._randomEvery = (1 + Math.random()) * 400;
 
-        this._lastRandomDirection = 0;
-        this._randomEvery = (1 + Math.random()) * 400;
+            this._setRandomDirection();
 
-        this._setRandomDirection();
+            this._logicStages.push('_randomDirection');
+        },
 
-        this._logicStages.push('_randomDirection');
-    }
+        _randomDirection: function() {
+            if (this._lastRandomDirection + this._randomEvery < nwo.time) {
 
-    NPC.prototype = Object.create(base);
+                this._directionAngle += Math.PI * (Math.random() - 0.5);
+                this.setDirection(this._directionAngle);
 
-    NPC.prototype._randomDirection = function() {
-        if (this._lastRandomDirection + this._randomEvery < nwo.time) {
+                this._lastRandomDirection = nwo.time;
+            }
+        },
 
-            this._directionAngle += Math.PI * (Math.random() - 0.5);
+        _setRandomDirection: function() {
+            this._directionAngle = Math.random() * 2 * Math.PI;
             this.setDirection(this._directionAngle);
-
-            this._lastRandomDirection = nwo.time;
         }
-    };
-
-    NPC.prototype._setRandomDirection = function() {
-        this._directionAngle = Math.random() * 2 * Math.PI;
-        this.setDirection(this._directionAngle);
-    };
-
-    nwo.NPC = NPC;
+    });
 
 })();

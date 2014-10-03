@@ -13,6 +13,10 @@
 (function() {
 
     function GameObject(params) {
+        this._ctor(params);
+    }
+
+    GameObject.prototype._ctor = function(params) {
         params = _.extend({
             pos: {
                 x: 0,
@@ -51,7 +55,7 @@
         this.setDirection(this._dir);
 
         nwo.trigger('object-created', this);
-    }
+    };
 
     GameObject.prototype.destroy = function() {
         nwo.trigger('object-destroyed', this);
